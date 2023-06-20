@@ -1,10 +1,12 @@
 import { render, screen } from '@testing-library/angular';
 import { SignUpComponent } from './sign-up.component';
+import userEvent from '@testing-library/user-event'
+
 describe('SignUpComponent', () => {
   describe('Layout', () => {
     it('has Sign Up header', async () => {
       await render(SignUpComponent);
-      const header = screen.getAllByRole('heading', { name: 'Sign Up' })[0];
+      const header = screen.getByRole('heading', { name: 'Sign Up' });
       expect(header).toBeInTheDocument();
     });
       
@@ -46,6 +48,18 @@ describe('SignUpComponent', () => {
         const button = screen.getByRole('button', { name: 'Sign Up' });
         expect(button).toBeDisabled();
       });
-
   });
+    
+    describe('Interactions', () => {
+        it ('enables the button when the password and password repeat have the same value', async () => {
+            await render(SignUpComponent)
+            const password = screen.getByLabelText('Password')
+            const repeatPassword = screen.getByLabelText('Password Repeat')
+            await userEvent.type(password, "junaid")
+            await userEvent.type(repeatPassword, "junaid")
+            const button = screen.getByRole('button', { name: "Sign Up" })
+            expect(button).toBeEnabled()
+        })
+
+    })
 });
